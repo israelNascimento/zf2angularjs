@@ -7,10 +7,10 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace Application;
+namespace SONRest;
 
-use Application\Service\Categoria;
-use Application\Service\Produto;
+
+use SONRest\Service\ProcessJson;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 
@@ -18,27 +18,33 @@ class Module
 {
     public function onBootstrap(MvcEvent $e)
     {
-        $eventManager        = $e->getApplication()->getEventManager();
+        $eventManager = $e->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
+
+
+
+        $sharedEvents = $e->getApplication()->getEventManager()->getSharedManager();
+
+        $sharedEvents->attach(
+            'Zend\Mvc\Controller\AbstractRestfulController',
+            MvcEvent::EVENT_DISPATCH,
+            array($this, 'postProcess'), -100);
     }
 
     public function getServiceConfig()
     {
         return array(
-            'factories'=>array(
-                'Application\Service\Categoria'=>function($sm){
-                    $em=$sm->get('Doctrine\ORM\EntityManager');
-                    return new Categoria($em);
-                },
-                'Application\Service\Produto'=>function($sm){
-                    $em=$sm->get('Doctrine\ORM\EntityManager');
-                    return new Produto($em);
+            'factories' => array(
+                'SONRest\Service\ProcessJson' => function ($sm) {
+                    return new ProcessJson(null, null, $sm->get('jms_serializer.serializer'));
+
                 }
 
             )
         );
     }
+
     public function getConfig()
     {
         return include __DIR__ . '/config/module.config.php';
@@ -53,5 +59,19 @@ class Module
                 ),
             ),
         );
+    }
+
+    public function postProcess(MvcEvent $e)
+    {
+        $processJson = $e->getTarget()->getServiceLocator()->get('SONRest\Service\ProcessJson');
+        $data = $e->getResult();
+        if (!$data instanceof \Zend\View\Model\ViewModel) {
+            $response = new \Zend\Http\Response();
+
+            $processJson->setResponse($response);
+            $processJson->setData($data);
+
+            return $processJson->process();
+        }
     }
 }

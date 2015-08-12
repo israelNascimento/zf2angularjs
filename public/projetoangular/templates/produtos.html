@@ -1,0 +1,23 @@
+<div ng-init="load()"></div>
+<h1>Produtos</h1>
+<a href="#/produtos/novo" class="btn-default   glyphicon glyphicon-plus-sign" title="Novo"></a>
+<table class="table table-striped">
+    <thead>
+        <th>ID</th>
+        <th>Produto</th>
+        <th>Categoria</th>
+        <th>Descrição</th>
+        <th>Ação</th>
+    </thead>
+    <tbody>
+        <tr ng-repeat="registro in registros">
+            <td>{{registro.id}}</td>
+            <td>{{registro.nome}}</td>
+            <td>{{registro.categoria.name}}</td>
+            <td>{{registro.descricao}}</td>
+            <td><a href="#/produtos/editar/{{registro.id}}" class="btn-primary btn-sm glyphicon glyphicon-edit" title="Editar"></a>&nbsp;<a href="#" ng-click="delete(registro.id)" class="btn-danger btn-sm  glyphicon glyphicon-trash " title="Remover"></a></td>
+
+
+        </tr>
+    </tbody>
+    </table>

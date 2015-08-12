@@ -7,7 +7,7 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace Application;
+namespace SONUser;
 
 use Application\Service\Categoria;
 use Application\Service\Produto;
@@ -27,14 +27,7 @@ class Module
     {
         return array(
             'factories'=>array(
-                'Application\Service\Categoria'=>function($sm){
-                    $em=$sm->get('Doctrine\ORM\EntityManager');
-                    return new Categoria($em);
-                },
-                'Application\Service\Produto'=>function($sm){
-                    $em=$sm->get('Doctrine\ORM\EntityManager');
-                    return new Produto($em);
-                }
+
 
             )
         );

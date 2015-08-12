@@ -16,6 +16,22 @@ class IndexController extends AbstractActionController
 {
     public function indexAction()
     {
-        return new ViewModel();
+/*
+        $service=$this->getServiceLocator()->get('Application\Service\Produto');
+        $service->insert(array(
+            'categoriaId'=>'1',
+            'nome'=>'footboll',
+            'descricao'=>'game de futbool'
+
+        ));
+       // $entity=$service->delete(3);
+
+
+        $em=$this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+        $repos=$em->getRepository('Application\Entity\Categoria');
+        $categorias=$repos->findAll();
+
+
+        return new ViewModel(array('categorias'=>$categorias));*/
     }
 }
